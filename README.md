@@ -17,6 +17,30 @@ AgnChat 是一个现代化的AI聊天机器人，基于 React + TypeScript 实�
 
 ---
 
+### 🖼️ 功能页面截图
+
+1. **欢迎页**
+   
+   ![欢迎页](https://raw.githubusercontent.com/jianduo1/agnchat/main/public/hello.png)
+
+2. **多会话管理**
+   
+   ![多会话管理](https://raw.githubusercontent.com/jianduo1/agnchat/main/public/conversation.png)
+
+3. **多模态交互**（待开发）
+   
+   ![多模态交互](https://raw.githubusercontent.com/jianduo1/agnchat/main/public/multi_modal.png)
+
+4. **深度思考功能**
+   
+   ![深度思考](https://raw.githubusercontent.com/jianduo1/agnchat/main/public/deep_thinking.png)
+
+5. **工具调用功能**
+   
+   ![工具调用](https://raw.githubusercontent.com/jianduo1/agnchat/main/public/tool_call.png)
+
+---
+
 ### 🏗️ 技术栈
 
 - React + TypeScript
