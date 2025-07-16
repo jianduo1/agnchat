@@ -1,0 +1,168 @@
+/* Header 基础样式 */
+.header {
+  padding: 24px 20px 16px 20px;
+  background: linear-gradient(270deg, var(--main-color) 0%, var(--bg-color) 60%);
+  border-bottom: 2px solid var(--main-color);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.header h1 {
+  font-size: 26px;
+  font-family: "Orbitron", "Segoe UI", Arial, sans-serif;
+  font-weight: 600;
+  color: var(--main-color);
+  letter-spacing: 2px;
+  text-shadow: 0 0 2px var(--main-color), 0 0 1px #fff;
+  margin-bottom: 6px;
+}
+
+.status {
+  font-size: 15px;
+  color: var(--text-color);
+  font-weight: 500;
+  text-shadow: none;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+}
+
+/* 头部按钮样式 */
+.header-btn {
+  padding: 6px 16px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  border: 1.5px solid var(--main-color);
+  border-radius: 18px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.header-btn:hover {
+  background: var(--main-color);
+  color: var(--bg-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 180, 219, 0.3);
+}
+
+/* 主题切换按钮 */
+.theme-toggle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--main-color);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 180, 219, 0.3);
+}
+
+.theme-toggle-btn.dark {
+  background: var(--bg-dark-color);
+}
+
+.theme-toggle-btn.light {
+  background: var(--bg-light-color);
+}
+
+/* Mac风格窗口按钮 */
+.mac-circle-btn {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+  background: var(--bg-color);
+}
+
+.mac-circle-btn.minimize {
+  background: #ffbd4c;
+}
+
+.mac-circle-btn.maximize {
+  background: #00ca56;
+}
+
+.mac-circle-btn.theme {
+  background: #00b4db;
+}
+
+.mac-circle-btn.hovered {
+  opacity: 1;
+}
+
+/* Mac按钮容器 */
+.mac-buttons {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+/* Header控制区域 */
+.header-controls {
+  position: absolute;
+  top: 60px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.theme-controls {
+  display: flex;
+  gap: 12px;
+}
+
+/* 标题样式补充 */
+.header h1 {
+  cursor: default;
+}
+
+/* Mac按钮图标颜色 */
+.mac-circle-btn.minimize span {
+  color: #a88b00;
+}
+
+.mac-circle-btn.maximize span {
+  color: #1e7c3a;
+}
+
+.mac-circle-btn.theme span {
+  color: #005b7f;
+}
+
+/* 亮色模式适配 */
+.light-mode .header {
+  background: linear-gradient(270deg, var(--main-color) 0%, var(--bg-light-color) 60%);
+}

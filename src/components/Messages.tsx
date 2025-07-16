@@ -1,4 +1,5 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import "../styles/Messages.css";
 
 export type Message = {
   id: string;
@@ -57,9 +58,34 @@ function formatReasoningBlocks(rawContent: string) {
   // 去除 tool-block 前后的多余换行，使卡片和文本紧贴
   html = html.replace(/\n?(<div class='tool-block'>[\s\S]*?<\/div>)\n?/g, "$1");
   // 去除所有多余的换行符，避免文本和卡片之间出现大空隙
-  html = html.replace(/\n\n/g, "\n");
+  html = html.replace(/\n\n\n/g, "\n\n");
+  html = html.replace(/\n---\n/g, "\n<hr>\n");
   return html;
 }
+
+// 右键菜单组件
+const ContextMenu: React.FC<{
+  x: number;
+  y: number;
+  onDelete: () => void;
+  onClose: () => void;
+}> = ({x, y, onDelete, onClose}) => {
+  useEffect(() => {
+    const handleClick = () => {
+      onClose();
+    };
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, [onClose]);
+
+  return (
+    <div className="zt-context-menu" style={{position: "fixed", top: y, left: x, zIndex: 9999, minWidth: 120}} onContextMenu={(e) => e.preventDefault()}>
+      <button className="zt-context-menu-item" onClick={onDelete}>
+        🗑️ 删除该消息
+      </button>
+    </div>
+  );
+};
 
 const Messages: React.FC<{
   messages: Message[];
@@ -67,30 +93,45 @@ const Messages: React.FC<{
   streamingAiMessage?: Message | null;
 }> = ({messages, onDelete, streamingAiMessage}) => {
   const messagesRef = useRef<HTMLDivElement>(null);
+  // 右键菜单状态
+  const [menu, setMenu] = useState<{x: number; y: number; id: string} | null>(null);
   useEffect(() => {
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
   }, [messages, streamingAiMessage]);
+
   return (
     <div className="messages scrollbar-thin" id="messages" ref={messagesRef}>
       {messages.map((msg) => (
-        <div key={msg.id} className={`message ${msg.role === "ai" ? "ai-message" : "user-message"}`}>
+        <div
+          key={msg.id}
+          className={`message ${msg.role === "ai" ? "ai-message" : "user-message"}`}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setMenu({x: e.clientX, y: e.clientY, id: msg.id});
+          }}
+        >
           <div className="msg-content" dangerouslySetInnerHTML={msg.role === "ai" ? {__html: formatReasoningBlocks(msg.content)} : undefined}>
             {msg.role === "user" ? msg.content : null}
           </div>
-          <button className={`msg-delete-btn ${msg.role === "ai" ? "right" : "left"}`} onClick={() => onDelete(msg.id)}>
-            🗑️
-          </button>
         </div>
       ))}
       {streamingAiMessage && (
         <div className="message ai-message">
           <div className="msg-content" dangerouslySetInnerHTML={{__html: formatReasoningBlocks(streamingAiMessage.content)}} />
-          <button className="msg-delete-btn right" style={{opacity: 0.5, pointerEvents: "none"}}>
-            🗑️
-          </button>
         </div>
+      )}
+      {menu && (
+        <ContextMenu
+          x={menu.x}
+          y={menu.y}
+          onDelete={() => {
+            onDelete(menu.id);
+            setMenu(null);
+          }}
+          onClose={() => setMenu(null)}
+        />
       )}
     </div>
   );

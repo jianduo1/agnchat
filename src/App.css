@@ -33,27 +33,10 @@
   }
 }
 
-.card {
+/* .card {
   padding: 2em;
 }
 
 .read-the-docs {
   color: #888;
-}
-
-/* 🧩 tool_context 美化样式 */
-
-.tool-context-json {
-  font-family: 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
-  background: #f3f4f6;
-  border-radius: 6px;
-  padding: 10px 14px;
-  color: #374151;
-  font-size: 14px;
-  line-height: 1.7;
-  margin: 4px 0 0 0;
-  white-space: pre;
-  overflow-x: auto;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 4px #7c3aed11;
-}
+} */

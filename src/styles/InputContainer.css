@@ -1,0 +1,255 @@
+/* 输入容器基础样式 */
+.input-container {
+  padding: 20px 20px 20px 20px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  background: linear-gradient(90deg, var(--main-color) 0%, var(--bg-light-color) 100%);
+  border-top: 2px solid var(--main-color);
+  z-index: 1;
+}
+
+/* 输入框样式 */
+#messageInput {
+  flex: 1;
+  min-height: 40px;
+  max-height: 120px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 28px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  outline: none;
+  box-shadow: 0 2px 10px var(--main-color), 0 2px 8px var(--main-color);
+  border: 1.5px solid var(--main-color);
+  transition: border 0.2s, box-shadow 0.2s;
+  overflow-y: hidden;
+  resize: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--main-color) var(--bg-color);
+}
+
+#messageInput::-webkit-scrollbar {
+  width: 6px;
+}
+
+#messageInput::-webkit-scrollbar-thumb {
+  background: var(--main-color);
+  border-radius: 3px;
+}
+
+#messageInput::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+#messageInput:focus {
+  border: 2px solid var(--main-color);
+  box-shadow: 0 0 12px 2px var(--main-color);
+}
+
+#messageInput::placeholder {
+  color: var(--text-color);
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+}
+
+/* 发送按钮样式 */
+#sendButton {
+  padding: 8px;
+  background: transparent;
+  border: 1.5px solid var(--main-color);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 10px var(--main-color), 0 2px 8px var(--bg-color);
+  transition: all 0.2s;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+#sendButton:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px var(--main-color), 0 2px 8px var(--bg-color);
+  background: var(--main-color);
+  color: var(--text-color);
+}
+
+#sendButton:disabled {
+  background: transparent;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+  border: 1.5px solid #666;
+  box-shadow: none;
+}
+
+/* 图片上传按钮 */
+#uploadButton {
+  margin-right: 8px;
+}
+
+/* 通用图标按钮样式 */
+.icon-btn {
+  background: transparent;
+  border: 1.5px solid var(--main-color);
+  color: var(--main-color);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 10px var(--main-color), 0 2px 8px var(--bg-color);
+}
+
+.icon-btn:hover:not(:disabled) {
+  background: var(--main-color);
+  color: var(--text-color);
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px var(--main-color), 0 2px 8px var(--bg-color);
+}
+
+.icon-btn:disabled {
+  background: transparent;
+  color: #666;
+  border: 1.5px solid #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 深度思考按钮样式 */
+.deep-think-btn {
+  padding: 6px 18px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  border: 1.5px solid var(--main-color);
+  border-radius: 18px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.deep-think-btn.flex-btn {
+  position: static;
+  transform: none;
+  left: auto;
+  top: auto;
+}
+
+.deep-think-btn.active {
+  background: linear-gradient(90deg, var(--main-color) 0%, var(--bg-light-color) 100%) !important;
+  color: var(--bg-color) !important;
+  border: 1.5px solid var(--main-color) !important;
+}
+
+/* 图片预览区域 */
+.image-preview-container {
+  position: absolute;
+  top: -80px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  z-index: 3;
+  padding: 8px 0;
+}
+
+.image-preview-container::-webkit-scrollbar {
+  display: none;
+}
+
+.image-preview-item {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.image-preview-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--main-color);
+  transition: all 0.2s;
+}
+
+.image-preview-item img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 180, 219, 0.3);
+}
+
+.image-remove-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff4757;
+  border: none;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.image-remove-btn:hover {
+  background: #ff3742;
+  transform: scale(1.1);
+}
+
+/* 亮色模式适配 */
+.light-mode .input-container {
+  background: linear-gradient(90deg, var(--main-color) 0%, rgba(255, 255, 255, 0.9) 100%);
+}
+
+.light-mode #sendButton {
+  background: linear-gradient(90deg, var(--main-color) 0%, rgba(255, 255, 255, 0.9) 100%);
+}
+
+.light-mode #sendButton:hover:not(:disabled) {
+  background: linear-gradient(90deg, #1a2980 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.light-mode .deep-think-btn.active {
+  background: linear-gradient(90deg, var(--main-color) 0%, rgba(255, 255, 255, 0.95) 100%) !important;
+}
+
+.button-bar {
+  position: absolute;
+  top: -15px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  z-index: 2;
+  align-items: center;
+}

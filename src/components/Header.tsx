@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import "../styles/Header.css";
 
 interface HeaderProps {
   onNewConv: () => void;
@@ -41,53 +42,40 @@ const Header: React.FC<HeaderProps> = ({onNewConv, onSwitchConv, onClearHistory,
     }
   };
 
-  const buttonStyle = {
-    padding: "6px 18px",
-    background: "var(--bg-color)",
-    color: "var(--text-color)",
-    border: "1.5px solid var(--main-color)",
-    borderRadius: 18,
-    cursor: "pointer",
-    fontWeight: 600,
-    fontSize: 14,
-    zIndex: 2,
-    whiteSpace: "nowrap" as const,
-  };
-
   return (
-    <div className="header" style={{position: "relative"}}>
+    <div className="header">
       {/* 苹果风格窗口按钮+主题切换 */}
-      <div style={{position: "absolute", left: 16, top: 16, display: "flex", gap: 8, zIndex: 10}} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <div className="mac-buttons" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         <button className={`mac-circle-btn minimize${hovered ? " hovered" : ""}`} title="最小化" onClick={onMinimize}>
-          <span style={{color: "#a88b00"}}>➖</span>
+          <span>➖</span>
         </button>
         <button className={`mac-circle-btn maximize${hovered ? " hovered" : ""}`} title="最大化" onClick={onMaximize}>
-          <span style={{color: "#1e7c3a"}}>➕</span>
+          <span>➕</span>
         </button>
         <button className={`mac-circle-btn theme${hovered ? " hovered" : ""}`} title="切换主题色" onClick={handleThemeSwitch}>
-          <span style={{color: "#005b7f"}}>{"</>"}</span>
+          <span>{"</>"}</span>
         </button>
       </div>
       {/* 标题和按钮 */}
-      <h1 style={{cursor: "default"}} title="AgnFlow 聊天室">
+      <h1 title="AgnFlow 聊天室">
         🤖 AgnFlow 聊天室{" "}
         <span className="status" id="status">
           {status}
         </span>
       </h1>
-      <div style={{position: "absolute", top: 60, left: 24, right: 24, display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 2}}>
-        <div style={{display: "flex", gap: 24, overflowX: "auto", maxWidth: "100%", scrollbarWidth: "none", msOverflowStyle: "none"}}>
-          <button id="newConvBtn" style={buttonStyle} onClick={onNewConv}>
+      <div className="header-controls">
+        <div className="header-buttons">
+          <button id="newConvBtn" className="header-btn" onClick={onNewConv}>
             💬 新增对话
           </button>
-          <button id="switchConvBtn" style={buttonStyle} onClick={onSwitchConv}>
+          <button id="switchConvBtn" className="header-btn" onClick={onSwitchConv}>
             🔄 切换对话
           </button>
-          <button id="clearHistoryBtn" style={buttonStyle} onClick={onClearHistory}>
+          <button id="clearHistoryBtn" className="header-btn" onClick={onClearHistory}>
             🗑️ 清空对话
           </button>
         </div>
-        <div style={{display: "flex", gap: 12}}>
+        <div className="theme-controls">
           <button className={`theme-toggle-btn ${isDarkMode ? "dark" : "light"}`} onClick={handleThemeToggle} title={isDarkMode ? "切换到亮色模式" : "切换到黑暗模式"}>
             {isDarkMode ? "☀️" : "🌙"}
           </button>

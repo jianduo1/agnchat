@@ -60,11 +60,13 @@ AgnChat 是一个现代化的AI聊天机器人，基于 React + TypeScript 实�
 # 🤝 贡献 Contributing
 
 我们欢迎贡献！请随时提交 Pull Request。
+<br>
 We welcome contributions! Please feel free to submit a Pull Request.
 
 # 📄 许可证 License
 
 本项目基于 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+<br>
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
