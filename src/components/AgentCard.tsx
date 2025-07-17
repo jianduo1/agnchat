@@ -79,6 +79,19 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
           </div>
         );
       case "checkbox":
+        // 新增：无options时渲染为单一布尔勾选框
+        if (!field.options) {
+          return (
+            <div className="field switch-field">
+              <label className="switch-label">☑️ {fieldLabel}</label>
+              <label className="switch">
+                <input type="checkbox" name={field.name} checked={!!agentData[field.name as keyof AgentData]} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.checked)} />
+                <span className="slider"></span>
+              </label>
+            </div>
+          );
+        }
+        // 有options时保持多选
         return (
           <div className="field checkbox-group">
             <label>☑️ {fieldLabel}</label>

@@ -235,60 +235,56 @@ const InputContainer: React.FC<{
 
       {/* 功能按钮区域 */}
       <div className="button-bar">
-        {uploadedImages.length > 0 ? (
-          <>
-            <button id="imgDescButton" className={`deep-think-btn${options.imageDescription ? " active" : ""}`} onClick={() => onToggleOption("imageDescription")} type="button">
-              🖼️ 图像生成
-            </button>
-            <button id="imgClsButton" className={`deep-think-btn${options.imageClassification ? " active" : ""}`} onClick={() => onToggleOption("imageClassification")} type="button">
-              🏷️ 图像分类
-            </button>
-            <button id="visReasonButton" className={`deep-think-btn${options.visualReasoning ? " active" : ""}`} onClick={() => onToggleOption("visualReasoning")} type="button">
-              🤔 视觉推理
-            </button>
-            <button id="vqaButton" className={`deep-think-btn${options.visualQA ? " active" : ""}`} onClick={() => onToggleOption("visualQA")} type="button">
-              ❓ 视觉问答（VQA）
-            </button>
-            <button id="imgSentimentButton" className={`deep-think-btn${options.imageSentiment ? " active" : ""}`} onClick={() => onToggleOption("imageSentiment")} type="button">
-              😊 图像情感分析
-            </button>
-          </>
-        ) : (
-          <>
-            <button id="thinkButton" className={`deep-think-btn${options.reasoning ? " active" : ""}`} onClick={() => onToggleOption("reasoning")} type="button">
-              🧠 深度思考
-            </button>
-            <button id="toolCallButton" className={`deep-think-btn${options.toolCall ? " active" : ""}`} onClick={() => onToggleOption("toolCall")} type="button">
-              🔧 工具调用
-            </button>
-          </>
-        )}
-        {/* 多个智能体按钮，排在后面 */}
-        {Array.isArray(schemas) &&
-          schemas.map((schema) => (
-            <div className="agent-btn-group" key={schema.name} style={{display: "inline-block", marginRight: 8}}>
-              <button 
-                className={`deep-think-btn${selectedAgent === schema.name ? " active" : ""}`} 
-                onClick={() => handleAgentSelect(schema.name)} 
-                type="button"
-              >
-                {schema.label}
+          {uploadedImages.length > 0 ? (
+            <>
+              <button id="imgDescButton" className={`deep-think-btn${options.imageDescription ? " active" : ""}`} onClick={() => onToggleOption("imageDescription")} type="button">
+                🖼️ 图像生成
               </button>
-              {selectedAgent === schema.name && (
-                <button
-                  className="agent-edit-btn"
-                  title="配置智能体"
-                  onClick={() => {
-                    setActiveSchema(schema);
-                    setShowAgentCard(true);
-                  }}
-                  type="button"
-                >
-                  ＋
+              <button id="imgClsButton" className={`deep-think-btn${options.imageClassification ? " active" : ""}`} onClick={() => onToggleOption("imageClassification")} type="button">
+                🏷️ 图像分类
+              </button>
+              <button id="visReasonButton" className={`deep-think-btn${options.visualReasoning ? " active" : ""}`} onClick={() => onToggleOption("visualReasoning")} type="button">
+                🤔 视觉推理
+              </button>
+              <button id="vqaButton" className={`deep-think-btn${options.visualQA ? " active" : ""}`} onClick={() => onToggleOption("visualQA")} type="button">
+                ❓ 视觉问答（VQA）
+              </button>
+              <button id="imgSentimentButton" className={`deep-think-btn${options.imageSentiment ? " active" : ""}`} onClick={() => onToggleOption("imageSentiment")} type="button">
+                😊 图像情感分析
+              </button>
+            </>
+          ) : (
+            <>
+              <button id="thinkButton" className={`deep-think-btn${options.reasoning ? " active" : ""}`} onClick={() => onToggleOption("reasoning")} type="button">
+                🧠 深度思考
+              </button>
+              <button id="toolCallButton" className={`deep-think-btn${options.toolCall ? " active" : ""}`} onClick={() => onToggleOption("toolCall")} type="button">
+                🔧 工具调用
+              </button>
+            </>
+          )}
+          {/* 多个智能体按钮，排在后面 */}
+          {Array.isArray(schemas) &&
+            schemas.map((schema) => (
+              <div className="agent-btn-group" key={schema.name} style={{display: "inline-block", marginRight: 8}}>
+                <button className={`deep-think-btn${selectedAgent === schema.name ? " active" : ""}`} onClick={() => handleAgentSelect(schema.name)} type="button">
+                  {schema.label}
                 </button>
-              )}
-            </div>
-          ))}
+                {selectedAgent === schema.name && (
+                  <button
+                    className="agent-edit-btn"
+                    // title="配置智能体"
+                    onClick={() => {
+                      setActiveSchema(schema);
+                      setShowAgentCard(true);
+                    }}
+                    type="button"
+                  >
+                    ＋
+                  </button>
+                )}
+              </div>
+            ))}
       </div>
 
       <textarea id="messageInput" ref={textareaRef} placeholder="给 AgnFlow 发送消息" rows={1} style={{resize: "none"}} value={value} onChange={handleInput} onKeyDown={onKeyDown} disabled={disabled} />

@@ -101,11 +101,12 @@ export function useChatSocket(conversationId: string | null) {
 
     console.log("📨 发送最终消息:", {
       type: message.type,
+      content,
       entry_action: message.entry_action,
       agent_config: {
         ...message.agent_config,
-        image_path: message.agent_config.image_path ? `[图片数据长度: ${message.agent_config.image_path.length}]` : undefined
-      }
+        image_path: message.agent_config.image_path ? `[图片数据长度: ${message.agent_config.image_path.length}]` : undefined,
+      },
     });
 
     wsRef.current.send(JSON.stringify(message));
