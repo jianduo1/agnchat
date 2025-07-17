@@ -29,11 +29,10 @@ function App() {
   // 弹窗
   const [modalOpen, setModalOpen] = useState(false);
 
-  // 新增：窗口模式
+  // 窗口模式
   const [mode, setMode] = useState<"normal" | "max" | "min">("normal");
   const handleMaximize = () => setMode("max");
   const handleMinimize = () => setMode("min");
-  // const handleRestore = () => setMode('normal'); // 已不再需要
 
   // 新建对话
   const handleNewConv = async () => {
@@ -45,8 +44,17 @@ function App() {
   // 切换对话
   const handleSwitchConv = async () => {
     await fetchList();
-    setModalOpen(true);
+    // 如果会话列表为空，自动创建新会话并关闭弹窗
+    if (conversations.length === 0) {
+      await createConversation();
+      setInput("");
+      setUploadedImages([]);
+      clearMessages();
+    } else {
+      setModalOpen(true);
+    }
   };
+  // 切换对话
   const handleSwitchConvId = (id: string) => {
     switchConversation(id);
     setInput("");
@@ -74,18 +82,17 @@ function App() {
   };
   // 输入区
   const handleInputChange = (v: string) => setInput(v);
-  const handleSend = () => {
-    if (!input.trim() || isStreaming) return;
-    // TODO: 这里可以添加图片处理逻辑
-    // 如果有上传的图片，可以在这里处理
+  // 发送消息
+  const handleSend = (agentConfigs: Record<string, any>, content?: string) => {
+    const sendContent = content !== undefined ? content : input;
+    if (!sendContent.trim() || isStreaming) return;
     if (uploadedImages.length > 0) {
       console.log("发送消息时包含图片:", uploadedImages.length, "张");
     }
-    sendMessage(input, options);
+    sendMessage(sendContent, options, agentConfigs, uploadedImages);
     setInput("");
     setUploadedImages([]);
   };
-
   // 选项切换函数
   const handleToggleOption = (key: keyof ChatOptions) => {
     setOptions((prev) => ({
@@ -93,12 +100,10 @@ function App() {
       [key]: !prev[key],
     }));
   };
-
   // 处理图片上传
   const handleImagesChange = (images: string[]) => {
     setUploadedImages(images);
   };
-
   return (
     <div
       className="chat-container"

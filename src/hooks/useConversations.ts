@@ -14,6 +14,19 @@ export function useConversations() {
     if (list.length === 0) {
       setCurrentId(null);
       localStorage.removeItem('agnflow_conversation_id');
+      return null;
+    } else {
+      const localId = localStorage.getItem('agnflow_conversation_id');
+      const found = list.find((c: any) => c.id === localId);
+      if (localId && found) {
+        setCurrentId(localId);
+        return localId;
+      } else {
+        const last = list[list.length - 1];
+        setCurrentId(last.id);
+        localStorage.setItem("agnflow_conversation_id", last.id);
+        return last.id;
+      }
     }
   }, []);
 
@@ -51,9 +64,10 @@ export function useConversations() {
 
   // 初始化
   useEffect(() => {
-    fetchList();
-    const localId = localStorage.getItem('agnflow_conversation_id');
-    if (localId) setCurrentId(localId);
+    (async () => {
+      const id = await fetchList();
+      if (id) setCurrentId(id);
+    })();
   }, [fetchList]);
 
   return {

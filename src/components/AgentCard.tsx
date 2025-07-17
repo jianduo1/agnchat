@@ -10,6 +10,7 @@ interface FormField {
   default?: string;
   required?: boolean;
   placeholder?: string;
+  label?: string; 
 }
 
 interface AgentCardProps {
@@ -25,6 +26,7 @@ interface AgentCardProps {
 const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgentData, label, isSelected = false, onConfigChange}) => {
   const [agentData, setAgentData] = useState<AgentData>(initialAgentData);
   const configRef = useRef<HTMLTextAreaElement>(null);
+  const [wraplineFields, setMultilineFields] = useState<Record<string, boolean>>({});
 
   const handleInputChange = (field: keyof AgentData, value: unknown) => {
     const newData = {...agentData, [field]: value};
@@ -51,11 +53,7 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
       if (field.example !== undefined) {
         let value: any = field.example;
         if (field.type === "checkbox" || field.type === "file") {
-          value = Array.isArray(field.example)
-            ? field.example
-            : typeof field.example === "string" && field.example.includes(",")
-            ? field.example.split(",").map((v) => v.trim())
-            : [field.example];
+          value = Array.isArray(field.example) ? field.example : typeof field.example === "string" && field.example.includes(",") ? field.example.split(",").map((v) => v.trim()) : [field.example];
         }
         (newData as any)[field.name] = value;
       }
@@ -65,11 +63,13 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
   };
 
   const renderField = (field: FormField) => {
+    const fieldLabel = field.label || field.name;  // 优先使用label
+    
     switch (field.type) {
       case "radio":
         return (
           <div className="field radio-group">
-            <label>🔘 {field.name}</label>
+            <label>🔘 {fieldLabel}</label>
             {field.options?.map((option) => (
               <label key={option}>
                 <input type="radio" name={field.name} value={option} checked={agentData[field.name as keyof AgentData] === option} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} />
@@ -81,7 +81,7 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
       case "checkbox":
         return (
           <div className="field checkbox-group">
-            <label>☑️ {field.name}</label>
+            <label>☑️ {fieldLabel}</label>
             {field.options?.map((option) => {
               const arr = Array.isArray(agentData[field.name as keyof AgentData]) ? (agentData[field.name as keyof AgentData] as string[]) : [];
               return (
@@ -110,10 +110,10 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
       case "select":
         return (
           <div className="field select-field">
-            <label>🔽 {field.name}</label>
+            <label>🔽 {fieldLabel}</label>
             <select value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} required={field.required}>
               <option value="" disabled>
-                {field.placeholder || "请选择"}
+                {field.placeholder || `请选择${fieldLabel}`}
               </option>
               {field.options?.map((option) => (
                 <option key={option} value={option}>
@@ -126,38 +126,80 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
       case "number":
         return (
           <div className="field">
-            <label>🔢 {field.name}</label>
-            <input type="number" value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} placeholder={field.placeholder} required={field.required} />
+            <label>🔢 {fieldLabel}</label>
+            <input type="number" value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} placeholder={field.placeholder || `请输入${fieldLabel}`} required={field.required} />
           </div>
         );
-      case "textarea":
+      case "textarea": {
+        const isWrapline = wraplineFields[field.name] ?? true;
         return (
           <div className="field textarea-field">
-            <label>📝 {field.name}</label>
-            <textarea value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} placeholder={field.placeholder} required={field.required} />
+            <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+              <label>📝 {fieldLabel}</label>
+              <div className="field-actions">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMultilineFields((prev) => ({
+                      ...prev,
+                      [field.name]: !isWrapline,
+                    }))
+                  }
+                >
+                  换行
+                </button>
+              </div>
+            </div>
+            <textarea
+              value={(agentData[field.name as keyof AgentData] as string) || ""}
+              onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)}
+              placeholder={field.placeholder || `请输入${fieldLabel}`}
+              required={field.required}
+              wrap={isWrapline ? "soft" : "off"}
+              style={{
+                whiteSpace: isWrapline ? "pre-wrap" : "pre",
+                overflowX: isWrapline ? "auto" : "scroll",
+              }}
+            />
           </div>
         );
+      }
       case "json":
         return (
           <div className="field json-field">
             <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-              <label>⚙️ {field.name}</label>
+              <label>⚙️ {fieldLabel}</label>
               <div className="field-actions">
                 <button type="button" onClick={formatJSON}>
                   格式化
                 </button>
               </div>
             </div>
-            <textarea ref={configRef} value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} placeholder={field.placeholder} required={field.required}  />
+            <textarea ref={configRef} value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} placeholder={field.placeholder || `请输入${fieldLabel}`} required={field.required} />
           </div>
         );
       case "file": {
         // 处理文件上传和预览
         const filesRaw = agentData[field.name as keyof AgentData];
         const files = Array.isArray(filesRaw) ? filesRaw : filesRaw ? [filesRaw] : [];
-        const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           const fileList = e.target.files ? Array.from(e.target.files) : [];
-          handleInputChange(field.name as keyof AgentData, [...files, ...fileList]);
+          const newFiles: any[] = [...files];
+          for (const file of fileList) {
+            // 上传到后端
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+              const res = await fetch('/api/upload', { method: 'POST', body: formData });
+              const data = await res.json();
+              if (data.file_id) {
+                newFiles.push(data.file_id); // 只保存file_id
+              }
+            } catch {
+              alert('文件上传失败');
+            }
+          }
+          handleInputChange(field.name as keyof AgentData, newFiles);
         };
         const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
           e.preventDefault();
@@ -170,7 +212,7 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
         };
         return (
           <div className="field file-upload-field">
-            <label>📄 {field.name}</label>
+            <label>📄 {fieldLabel}</label>
             <div className="file-upload-area" tabIndex={0} onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
               <input type="file" multiple style={{display: "none"}} id={`file-input-${field.name}`} onChange={handleFileChange} />
               <label htmlFor={`file-input-${field.name}`} className="file-upload-btn">
@@ -182,24 +224,22 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
                 {files.map((file, idx) => {
                   let preview;
                   let key;
-                  if (file instanceof File) {
-                    const url = URL.createObjectURL(file);
-                    if (file.type.startsWith("image/")) {
-                      preview = <img src={url} alt={file.name} className="file-preview-img" />;
-                    } else if (file.type.startsWith("video/")) {
-                      preview = <video src={url} controls className="file-preview-video" />;
-                    } else if (file.type.startsWith("audio/")) {
-                      preview = <audio src={url} controls className="file-preview-audio" />;
+                  if (typeof file === "string") {
+                    // 判断是否为图片（简单通过后缀名或file_id约定）
+                    if (file.match(/\.(png|jpg|jpeg|gif|bmp|webp)$/i) || file.startsWith('http') || file.startsWith('/api/upload/')) {
+                      // 统一用相对前端根目录的路径
+                      let imgSrc;
+                      if (file.startsWith('http')) {
+                        imgSrc = file;
+                      } else if (file.startsWith('/')) {
+                        imgSrc = file; // 已经是绝对路径
+                      } else {
+                        imgSrc = `${window.location.origin}/api/file/${file}`;
+                      }
+                      preview = <img src={imgSrc} alt="预览" className="file-preview-image" style={{maxWidth: '120px', maxHeight: '120px', borderRadius: '6px', border: '1px solid #333', background: '#222'}} />;
                     } else {
-                      preview = <a href={url} download={file.name} className="file-preview-link">{file.name}</a>;
+                      preview = <span className="file-preview-link">{file}</span>;
                     }
-                    key = file.name + idx;
-                  } else if (file instanceof Blob) {
-                    const url = URL.createObjectURL(file);
-                    preview = <a href={url} download={`file-${idx}`} className="file-preview-link">{`文件${idx + 1}`}</a>;
-                    key = `blob-${idx}`;
-                  } else if (typeof file === "string") {
-                    preview = <span className="file-preview-link">{file}</span>;
                     key = String(file) + idx;
                   }
                   return (
@@ -220,8 +260,8 @@ const AgentCard: React.FC<AgentCardProps> = ({formFields, agentData: initialAgen
       default:
         return (
           <div className="field">
-            <label>🔤 {field.name}</label>
-            <input type="text" value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} placeholder={field.placeholder} required={field.required} />
+            <label>🔤 {fieldLabel}</label>
+            <input type="text" value={(agentData[field.name as keyof AgentData] as string) || ""} onChange={(e) => handleInputChange(field.name as keyof AgentData, e.target.value)} placeholder={field.placeholder || `请输入${fieldLabel}`} required={field.required} />
           </div>
         );
     }

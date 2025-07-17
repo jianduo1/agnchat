@@ -33,7 +33,9 @@ export function useChatSocket(conversationId: string | null) {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === "history") {
-        setMessages((msgs) => [...msgs, data]);
+        // 修正：role assistant -> ai
+        const mappedRole = data.role === 'assistant' ? 'ai' : 'user';
+        setMessages((msgs) => [...msgs, {...data, role: mappedRole}]);
       } else if (data.type === "start") {
         setIsStreaming(true);
         setStatus("streaming");
@@ -63,9 +65,50 @@ export function useChatSocket(conversationId: string | null) {
   }, [isStreaming, streamingAiMessage]);
 
   // 发送消息
-  const sendMessage = useCallback((content: string, options: ChatOptions) => {
+  const sendMessage = useCallback((content: string, options: ChatOptions, agentConfigs?: Record<string, any>, images?: string[]) => {
     if (!wsRef.current || wsRef.current.readyState !== 1) return;
-    wsRef.current.send(JSON.stringify({type: "message", content, options}));
+    
+    console.log("📤 准备发送消息:", {
+      content,
+      options,
+      agentConfigs,
+      hasImages: images?.length > 0
+    });
+
+    // 构造发送的消息
+    const message: any = {
+      type: "message", 
+      content, 
+      options,
+      entry_action: options.entry_action,
+      agent_config: agentConfigs?.[options.entry_action || ""] || {}
+    };
+
+    // 如果是视觉分析节点且有图片，添加图片相关参数
+    if (options.entry_action === 'vision_node' && images?.length > 0) {
+      console.log("🖼️ 处理视觉分析节点的图片数据");
+      message.agent_config = {
+        image_path: images[0], // 发送第一张图片的 DataURL
+        query_type: options.imageDescription ? "图像描述生成" :
+                   options.imageClassification ? "图像分类" :
+                   options.visualReasoning ? "视觉推理" :
+                   options.visualQA ? "视觉问答" :
+                   options.imageSentiment ? "图像情感分析" : "图像描述生成"
+      };
+      console.log("  - 分析类型:", message.agent_config.query_type);
+      console.log("  - 图片数据长度:", images[0].length);
+    }
+
+    console.log("📨 发送最终消息:", {
+      type: message.type,
+      entry_action: message.entry_action,
+      agent_config: {
+        ...message.agent_config,
+        image_path: message.agent_config.image_path ? `[图片数据长度: ${message.agent_config.image_path.length}]` : undefined
+      }
+    });
+
+    wsRef.current.send(JSON.stringify(message));
     setMessages((msgs) => [...msgs, {id: Math.random().toString(36).slice(2), role: "user", content}]);
   }, []);
 

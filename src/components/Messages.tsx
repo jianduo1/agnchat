@@ -112,9 +112,13 @@ const Messages: React.FC<{
             setMenu({x: e.clientX, y: e.clientY, id: msg.id});
           }}
         >
-          <div className="msg-content" dangerouslySetInnerHTML={msg.role === "ai" ? {__html: formatReasoningBlocks(msg.content)} : undefined}>
-            {msg.role === "user" ? msg.content : null}
-          </div>
+          <div className="msg-content" 
+            dangerouslySetInnerHTML={
+              msg.role === "ai"
+                ? {__html: formatReasoningBlocks(msg.content)}
+                : {__html: (msg.content || '').replace(/\n/g, '<br/>')}
+            }
+          />
         </div>
       ))}
       {streamingAiMessage && (
